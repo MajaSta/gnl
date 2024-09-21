@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Oceano <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: utente <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/16 21:26:41 by Oceano            #+#    #+#             */
-/*   Updated: 2023/02/20 00:45:17 by utente           ###   ########.fr       */
+/*   Created: 2023/02/20 00:45:53 by utente            #+#    #+#             */
+/*   Updated: 2023/02/20 00:46:25 by utente           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10 
+#  define BUFFER_SIZE 10
 # endif
 
 # include <fcntl.h>
