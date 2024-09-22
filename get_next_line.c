@@ -36,7 +36,7 @@ void	polish_list(t_list **list)
 	buf[k] = '\0';
 	clean_node->str_buf = buf;
 	clean_node->next = NULL;
-	dealloc(list, clean_node, buf);
+	dealloc(list, clean_node);
 }
 
 char	*get_line(t_list *list)
