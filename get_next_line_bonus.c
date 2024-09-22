@@ -14,10 +14,7 @@
 #include <stdlib.h>
 #include <stdio.h>//TODO
 
-/*
- * Polish linked list for next call
-*/
-// Helper function: find position of the newline
+
 int find_newline_position(char *str_buf)
 {
     int i = 0;
@@ -26,7 +23,6 @@ int find_newline_position(char *str_buf)
     return str_buf[i] == '\n' ? i + 1 : -1;  // Return position after newline or -1 if none found
 }
 
-// Helper function: create a new node with leftover data after newline
 t_list *create_clean_node(t_list *last_node, int start_pos)
 {
     t_list *clean_node;
@@ -51,7 +47,6 @@ t_list *create_clean_node(t_list *last_node, int start_pos)
     return clean_node;
 }
 
-// Main function: Polish the list for the next call
 void polish_list(t_list **list)
 {
     t_list *last_node = find_last_node(*list);
@@ -66,9 +61,7 @@ void polish_list(t_list **list)
     dealloc(list, clean_node, clean_node->str_buf);  // Clean old list and set new
 }
 
-/*
- * Get my (line\n]
-*/
+
 char	*get_line(t_list *list)
 {
 	int		str_len;
@@ -84,10 +77,6 @@ char	*get_line(t_list *list)
 	return (next_str);
 }
 
-/*
- * append one node
- * to the end of list
-*/
 void	append(t_list **list, char *buf, int fd)
 {
 	t_list	*new_node;
@@ -105,7 +94,6 @@ void	append(t_list **list, char *buf, int fd)
 	new_node->next = NULL;
 }
 
-// Helper function: read data from file descriptor and append it to the list
 int read_and_append(t_list **list, int fd)
 {
     int char_read;
@@ -120,12 +108,11 @@ int read_and_append(t_list **list, int fd)
         return 0;
     }
     buf[char_read] = '\0';
-    append(list, strdup(buf));  // Create a copy of buf for each node
+    append(list, strdup(buf)); 
     free(buf);
     return 1;
 }
 
-// Main function: Create list by reading from fd
 void create_list(t_list **list, int fd)
 {
     char *buf = malloc(BUFFER_SIZE + 1);
@@ -139,25 +126,20 @@ void create_list(t_list **list, int fd)
         if (char_read <= 0)
         {
             free(buf);
-            if (char_read == 0 && *list) // Handle EOF without newline
+            if (char_read == 0 && *list)
                 return; 
             break;
         }
         buf[char_read] = '\0';
-        append(list, strdup(buf)); // Copy buffer into the linked list
+        append(list, strdup(buf));
         if (found_newline(*list))
-            break; // Stop if newline is found
+            break;
     }
     free(buf);
 }
 
 
-/*
- * Mother function
- * 	~Taked a fildes
- * 	~Gives back the next_string
-*/
-// Main function to return the next line from the file
+
 char *get_next_line(int fd)
 {
     static t_list *list = NULL;
@@ -166,17 +148,16 @@ char *get_next_line(int fd)
     if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
         return NULL;
 
-    create_list(&list, fd); // Create the list from the file descriptor
+    create_list(&list, fd);
     if (!list)
         return NULL;
 
-    next_line = get_line(list); // Get the next line
-    polish_list(&list); // Clean up the list for the next call
+    next_line = get_line(list);
+    polish_list(&list);
 
-    // If no line was returned and there's data left, return the remaining data
     if (!next_line && list) 
     {
-        next_line = get_line(list); // Try to get remaining data if available
+        next_line = get_line(list);
         polish_list(&list);
     }
     return next_line;
