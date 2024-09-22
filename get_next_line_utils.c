@@ -98,9 +98,8 @@ void dealloc(t_list **list, t_list *clean_node)
     
     *list = NULL;
 
-    // If clean_node contains data, set it as the new head
     if (clean_node && clean_node->str_buf[0])
         *list = clean_node;
-    else if (clean_node)  // If no data, free the clean_node
+    else if (clean_node) 
         free(clean_node->str_buf), free(clean_node);
 }
