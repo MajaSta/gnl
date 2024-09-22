@@ -12,11 +12,8 @@
 
 #include "get_next_line.h"
 #include <stdlib.h>
-#include <stdio.h>//TODO
+#include <stdio.h>
 
-/*
- * Polish linked list for next call
-*/
 void	polish_list(t_list **list)
 {
 	t_list	*last_node;
@@ -42,9 +39,6 @@ void	polish_list(t_list **list)
 	dealloc(list, clean_node, buf);
 }
 
-/*
- * Get my (line\n] 
-*/
 char	*get_line(t_list *list)
 {
 	int		str_len;
@@ -60,10 +54,6 @@ char	*get_line(t_list *list)
 	return (next_str);
 }
 
-/*
- * append one node
- * to the end of list
-*/
 void	append(t_list **list, char *buf)
 {
 	t_list	*new_node;
@@ -102,11 +92,6 @@ void	create_list(t_list **list, int fd)
 	}
 }
 
-/*
- * Mother function
- * 	~Took a fildes
- * 	~Gives back the next_string 
-*/
 char	*get_next_line(int fd)
 {
 	static t_list	*list = NULL;
