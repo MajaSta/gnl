@@ -22,13 +22,15 @@ int found_newline(t_list *list)
         i = 0;
         while (list->str_buf[i])
         {
-            if (list->str_buf[i++] == '\n')
+            if (list->str_buf[i] == '\n')
                 return 1;
+            i++;
         }
         list = list->next;
     }
     return 0;
 }
+
 
 t_list *find_last_node(t_list *list)
 {
@@ -43,43 +45,51 @@ t_list *find_last_node(t_list *list)
 
 void copy_str(t_list *list, char *str)
 {
-    int i, k = 0;
+    int k;
+    int i;
 
+    k = 0;
     while (list)
     {
         i = 0;
         while (list->str_buf[i])
         {
-            str[k++] = list->str_buf[i++];
-            if (list->str_buf[i - 1] == '\n')
+            str[k++] = list->str_buf[i];
+            if (list->str_buf[i] == '\n')
             {
                 str[k] = '\0';
                 return;
             }
+            i++;
         }
         list = list->next;
     }
     str[k] = '\0';
 }
 
+
+
 int len_to_newline(t_list *list)
 {
-    int i, len = 0;
-
+    int length;
+    int i;
+    
+    length = 0;
     while (list)
     {
-        i = 0;
-        while (list->str_buf[i])
+       i = 0;
+        while (list->str_buf[i] && list->str_buf[i] != '\n')
         {
-            if (list->str_buf[i] == '\n')
-                return (len + 1);
-            ++i;
-            ++len;
+            length++;
+            i++;
         }
+        if (list->str_buf[i] == '\n')
+            return length + 1;
         list = list->next;
     }
-    return len;
+    return length;
 }
+
 
 void dealloc(t_list **list, t_list *clean_node)
 {
@@ -95,11 +105,16 @@ void dealloc(t_list **list, t_list *clean_node)
         free(*list);
         *list = tmp;
     }
-    
-    *list = NULL;
 
-    if (clean_node && clean_node->str_buf[0])
-        *list = clean_node;
-    else if (clean_node) 
-        free(clean_node->str_buf), free(clean_node);
+    if (clean_node)
+    {
+        if (clean_node->str_buf[0])
+            *list = clean_node;
+        else
+        {
+            free(clean_node->str_buf);
+            free(clean_node);
+        }
+    }
 }
+
