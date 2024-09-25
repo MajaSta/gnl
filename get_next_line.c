@@ -115,3 +115,29 @@ char *get_next_line(int fd)
     return (next_line);
 }
 
+#include <fcntl.h>  // For open()
+#include <unistd.h> // For close()
+#include <stdio.h>  // For printf()
+#include "get_next_line.h"
+
+int main(void)
+{
+    int fd;
+    char *line;
+
+    // Open a file for reading (assuming "test.txt" is the file)
+    fd = open("test.txt", O_RDONLY);
+    if (fd == -1)
+        return 1; // If opening the file fails, return 1
+
+    // Read and print lines using get_next_line
+    while ((line = get_next_line(fd)) != NULL)
+    {
+        printf("%s", line);
+        free(line); // Free the allocated line
+    }
+
+    // Close the file descriptor
+    close(fd);
+    return 0;
+}
