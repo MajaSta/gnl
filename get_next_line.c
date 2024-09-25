@@ -24,25 +24,16 @@ void polish_list(t_list **list)
 
     buf = malloc(BUFFER_SIZE + 1);
     clean_node = malloc(sizeof(t_list));
-    if (buf == NULL || clean_node == NULL)
-    {
-        free(buf);
-        free(clean_node);
-        return;
-    }
-
+    if (!buf || !clean_node)
+        return (free(buf), free(clean_node), (void)0);
     last_node = find_last_node(*list);
     i = 0;
     while (last_node->str_buf[i] && last_node->str_buf[i] != '\n')
         i++;
-
     k = 0;
     while (last_node->str_buf[i])
-    {
         buf[k++] = last_node->str_buf[++i];
-    }
     buf[k] = '\0';
-
     clean_node->str_buf = buf;
     clean_node->next = NULL;
     dealloc(list, clean_node);
