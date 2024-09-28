@@ -30,8 +30,8 @@ void polish_list(t_list **list)
     i = 0;
     while (last_node->str_buf[i] && last_node->str_buf[i] != '\n')
         i++;
-    
-    if (last_node->str_buf[i] == '\0' || last_node->str_buf[i + 1] == '\0')
+
+    if (last_node->str_buf[i] == '\0')
     {
         dealloc(list, NULL);
         return;
@@ -40,8 +40,12 @@ void polish_list(t_list **list)
     buf = malloc(BUFFER_SIZE + 1);
     clean_node = malloc(sizeof(t_list));
     if (!buf || !clean_node)
-        return (free(buf), free(clean_node), (void)0);
-    
+    {
+        free(buf);
+        free(clean_node);
+        return;
+    }
+
     k = 0;
     while (last_node->str_buf[++i])
         buf[k++] = last_node->str_buf[i];
@@ -142,19 +146,16 @@ int main(void)
     int fd;
     char *line;
 
-    // Open a file for reading (assuming "test.txt" is the file)
     fd = open("test.txt", O_RDONLY);
     if (fd == -1)
-        return 1; // If opening the file fails, return 1
+        return 1;
 
-    // Read and print lines using get_next_line
     while ((line = get_next_line(fd)) != NULL)
     {
         printf("%s", line);
-        free(line); // Free the allocated line
+        free(line);
     }
 
-    // Close the file descriptor
     close(fd);
     return 0;
 }
