@@ -43,17 +43,15 @@ void copy_str(t_list *list, char *str)
             str[k++] = list->str_buf[i];
             if (list->str_buf[i] == '\n')
             {
-                str[k] = '\0';
+                str[k] = '\0'; // Terminate the string at the newline
                 return;
             }
             i++;
         }
         list = list->next;
     }
-    str[k] = '\0';
+    str[k] = '\0'; // Make sure to null-terminate the string if there's no newline
 }
-
-
 
 int len_to_newline(t_list *list)
 {
@@ -69,13 +67,11 @@ int len_to_newline(t_list *list)
             i++;
         }
         if (list->str_buf[i] == '\n')
-            return length + 1; // Uwzględnij '\n'
+            return length + 1; // Include '\n'
         list = list->next;
     }
-    return length; // W przypadku braku '\n'
+    return length; // Return the total length if no newline is found
 }
-
-
 
 void dealloc(t_list **list, t_list *clean_node)
 {
@@ -84,7 +80,7 @@ void dealloc(t_list **list, t_list *clean_node)
     if (!list || !*list)
         return;
 
-    // Zwalnianie wszystkich węzłów listy
+    // Free all nodes in the list
     while (*list)
     {
         tmp = (*list)->next;
@@ -93,14 +89,14 @@ void dealloc(t_list **list, t_list *clean_node)
         *list = tmp;
     }
 
-   if (clean_node)
+    if (clean_node)
     {
-        if (clean_node->str_buf[0]) // Jeśli clean_node nie jest pusty
-            *list = clean_node;
+        if (clean_node->str_buf && clean_node->str_buf[0]) // If clean_node is not empty
+            *list = clean_node; // Assign clean_node to the list
         else
         {
-            free(clean_node->str_buf);
-            free(clean_node);
+            free(clean_node->str_buf); // Free empty buffer
+            free(clean_node); // Free node
         }
     }
 }
