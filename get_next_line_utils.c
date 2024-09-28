@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: Oceano <marvin@42.fr>                      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/15 17:58:53 by Oceano            #+#    #+#             */
-/*   Updated: 2023/02/19 18:51:33 by utente           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
 #include <stdlib.h>
 
@@ -31,7 +19,6 @@ int found_newline(t_list *list)
     return 0;
 }
 
-
 t_list *find_last_node(t_list *list)
 {
     if (!list)
@@ -45,10 +32,9 @@ t_list *find_last_node(t_list *list)
 
 void copy_str(t_list *list, char *str)
 {
-    int k;
+    int k = 0;
     int i;
 
-    k = 0;
     while (list)
     {
         i = 0;
@@ -71,24 +57,24 @@ void copy_str(t_list *list, char *str)
 
 int len_to_newline(t_list *list)
 {
-    int length;
+    int length = 0;
     int i;
     
-    length = 0;
     while (list)
     {
-       i = 0;
+        i = 0;
         while (list->str_buf[i] && list->str_buf[i] != '\n')
         {
             length++;
             i++;
         }
         if (list->str_buf[i] == '\n')
-            return length + 1;
+            return length + 1; // Uwzględnij '\n'
         list = list->next;
     }
-    return length;
+    return length; // W przypadku braku '\n'
 }
+
 
 
 void dealloc(t_list **list, t_list *clean_node)
@@ -98,6 +84,7 @@ void dealloc(t_list **list, t_list *clean_node)
     if (!list || !*list)
         return;
 
+    // Zwalnianie wszystkich węzłów listy
     while (*list)
     {
         tmp = (*list)->next;
@@ -106,9 +93,9 @@ void dealloc(t_list **list, t_list *clean_node)
         *list = tmp;
     }
 
-    if (clean_node)
+   if (clean_node)
     {
-        if (clean_node->str_buf[0])
+        if (clean_node->str_buf[0]) // Jeśli clean_node nie jest pusty
             *list = clean_node;
         else
         {
@@ -117,4 +104,3 @@ void dealloc(t_list **list, t_list *clean_node)
         }
     }
 }
-
