@@ -79,7 +79,7 @@ void append(t_list **list, char *buf)
 
 void create_list(t_list **list, int fd)
 {
-    int char_read;
+    int char_read;	
     char *buf;
 
     while (!found_newline(*list))
@@ -89,17 +89,11 @@ void create_list(t_list **list, int fd)
             return;
 
         char_read = read(fd, buf, BUFFER_SIZE);
-        if (char_read < 0)
+        if (char_read <= 0)
         {
             free(buf);
-            return; // Handle read error
+            return;
         }
-        if (char_read == 0)
-        {
-            free(buf);
-            break; // EOF reached
-        }
-
         buf[char_read] = '\0';
         append(list, buf);
     }
@@ -110,13 +104,8 @@ char *get_next_line(int fd)
     static t_list *list; 
     char *next_line;
         
-    if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	if (read(fd, &next_line, 0) < 0)
-	{
-		dealloc(&list[fd], NULL, NULL);
-		return (NULL);
-	}
+    if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
+        return (NULL);
 
     create_list(&list, fd);
     if (list == NULL)
