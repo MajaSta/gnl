@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: Oceano <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/02/15 17:58:53 by Oceano            #+#    #+#             */
+/*   Updated: 2023/02/19 18:51:33 by utente           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 #include <stdlib.h>
 
@@ -19,6 +31,7 @@ int found_newline(t_list *list)
     return 0;
 }
 
+
 t_list *find_last_node(t_list *list)
 {
     if (!list)
@@ -32,9 +45,10 @@ t_list *find_last_node(t_list *list)
 
 void copy_str(t_list *list, char *str)
 {
-    int k = 0;
+    int k;
     int i;
 
+    k = 0;
     while (list)
     {
         i = 0;
@@ -43,35 +57,39 @@ void copy_str(t_list *list, char *str)
             str[k++] = list->str_buf[i];
             if (list->str_buf[i] == '\n')
             {
-                str[k] = '\0'; // Terminate the string at the newline
+                str[k] = '\0';
                 return;
             }
             i++;
         }
         list = list->next;
     }
-    str[k] = '\0'; // Make sure to null-terminate the string if there's no newline
+    str[k] = '\0';
 }
+
+
 
 int len_to_newline(t_list *list)
 {
-    int length = 0;
+    int length;
     int i;
     
+    length = 0;
     while (list)
     {
-        i = 0;
+       i = 0;
         while (list->str_buf[i] && list->str_buf[i] != '\n')
         {
             length++;
             i++;
         }
         if (list->str_buf[i] == '\n')
-            return length + 1; // Include '\n'
+            return length + 1;
         list = list->next;
     }
-    return length; // Return the total length if no newline is found
+    return length;
 }
+
 
 void dealloc(t_list **list, t_list *clean_node)
 {
@@ -80,7 +98,6 @@ void dealloc(t_list **list, t_list *clean_node)
     if (!list || !*list)
         return;
 
-    // Free all nodes in the list
     while (*list)
     {
         tmp = (*list)->next;
@@ -91,12 +108,13 @@ void dealloc(t_list **list, t_list *clean_node)
 
     if (clean_node)
     {
-        if (clean_node->str_buf && clean_node->str_buf[0]) // If clean_node is not empty
-            *list = clean_node; // Assign clean_node to the list
+        if (clean_node->str_buf[0])
+            *list = clean_node;
         else
         {
-            free(clean_node->str_buf); // Free empty buffer
-            free(clean_node); // Free node
+            free(clean_node->str_buf);
+            free(clean_node);
         }
     }
 }
+
