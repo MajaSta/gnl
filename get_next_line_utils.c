@@ -49,22 +49,20 @@ void copy_str(t_list *list, char *str)
     int i;
 
     k = 0;
-    while (list)
-    {
+  while (list) 
+  {
         i = 0;
-        while (list->str_buf[i])
-        {
+        while (list->str_buf[i]) {
             str[k++] = list->str_buf[i];
-            if (list->str_buf[i] == '\n')
-            {
-                str[k] = '\0';
+            if (list->str_buf[i] == '\n') {
+                str[k] = '\0'; // Null-terminate immediately after newline
                 return;
             }
             i++;
         }
         list = list->next;
     }
-    str[k] = '\0';
+    str[k] = '\0'; // Ensure str is always null-terminated
 }
 
 
@@ -75,10 +73,10 @@ int len_to_newline(t_list *list)
     int i;
     
     length = 0;
-    while (list)
-    {
-       i = 0;
-        while (list->str_buf[i] && list->str_buf[i] != '\n')
+     while (list) 
+     {
+        i = 0;
+        while (list->str_buf[i] && list->str_buf[i] != '\n') 
         {
             length++;
             i++;
@@ -91,30 +89,27 @@ int len_to_newline(t_list *list)
 }
 
 
-void dealloc(t_list **list, t_list *clean_node)
-{
+void dealloc(t_list **list, t_list *clean_node) {
     t_list *tmp;
 
     if (!list || !*list)
         return;
 
-    while (*list)
-    {
+    while (*list) {
         tmp = (*list)->next;
-        free((*list)->str_buf);
-        free(*list);
-        *list = tmp;
+        free((*list)->str_buf); // Free the buffer of the current node
+        free(*list);            // Free the current node
+        *list = tmp;           // Move to the next node
     }
 
-    if (clean_node)
-    {
-        if (clean_node->str_buf[0])
-            *list = clean_node;
-        else
-        {
-            free(clean_node->str_buf);
-            free(clean_node);
+    // Handle the clean_node separately
+    if (clean_node) {
+        if (clean_node->str_buf[0]) { // Check if the clean node has content
+            clean_node->next = NULL; // Important to avoid dangling pointers
+            *list = clean_node;      // Set clean_node as the new list head
+        } else {
+            free(clean_node->str_buf); // Free if empty
+            free(clean_node);          // Free the node itself
         }
     }
 }
-
