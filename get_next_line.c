@@ -1,20 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: Oceano <marvin@42.fr>                      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/15 11:48:03 by Oceano            #+#    #+#             */
-/*   Updated: 2023/02/19 18:50:24 by utente           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-
-#include "get_next_line.h"
-#include <stdlib.h>
-#include <unistd.h>
-
 #include "get_next_line.h"
 #include <stdlib.h>
 #include <unistd.h>
@@ -23,43 +6,29 @@ void polish_list(t_list **list)
 {
     t_list *last_node;
     t_list *clean_node;
-    int i;
-    int k;
+    int i = 0;
+    int k = 0;
     char *buf;
-
-    if (!list || !*list)
-        return;
-
-    last_node = find_last_node(*list);
-    i = 0;
-    while (last_node->str_buf[i] && last_node->str_buf[i] != '\n')
-        i++;
-
-    if (last_node->str_buf[i] == '\0')
-    {
-        dealloc(list, NULL);
-        return;
-    }
 
     buf = malloc(BUFFER_SIZE + 1);
     clean_node = malloc(sizeof(t_list));
-    if (!buf || !clean_node)
+    if (buf == NULL || clean_node == NULL)
     {
-        free(buf);
+        free(buf);  // Avoid leak
         free(clean_node);
         return;
     }
-
-    k = 0;
-    while (last_node->str_buf[++i])
+    last_node = find_last_node(*list);
+    while (last_node->str_buf[i] && last_node->str_buf[i] != '\n')
+        ++i;
+    while (last_node->str_buf[i] && last_node->str_buf[++i])
         buf[k++] = last_node->str_buf[i];
     buf[k] = '\0';
-
     clean_node->str_buf = buf;
     clean_node->next = NULL;
-
     dealloc(list, clean_node);
 }
+
 
 char *get_line(t_list *list)
 {
@@ -67,15 +36,14 @@ char *get_line(t_list *list)
     char *next_str;
 
     if (list == NULL)
-        return NULL;
-
+        return (NULL);
     str_len = len_to_newline(list);
-    next_str = malloc(str_len + 1); // +1 for '\0'
+    next_str = malloc(str_len + 1);
     if (next_str == NULL)
-        return NULL;
-
+        return (NULL);
     copy_str(list, next_str);
-    return next_str;
+    return (next_str);
+
 }
 
 void append(t_list **list, char *buf)
@@ -109,21 +77,17 @@ void create_list(t_list **list, int fd)
             return;
 
         char_read = read(fd, buf, BUFFER_SIZE);
-        if (char_read < 0)
+        if (char_read <= 0)
         {
             free(buf);
-            return; // Return on error
+            if (char_read == 0) // EOF
+                return;
         }
-        if (char_read == 0)
-        {
-            free(buf); // Free buffer if EOF is reached
-            return;
-        }
-
         buf[char_read] = '\0';
         append(list, buf);
     }
 }
+
 
 char *get_next_line(int fd)
 {
