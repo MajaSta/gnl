@@ -22,11 +22,17 @@ void polish_list(t_list **list)
     int k;
     char *buf;
 
+    last_node = find_last_node(*list);
+    if (!last_node) // Check if last_node is NULL
+        return;
     buf = malloc(BUFFER_SIZE + 1);
     clean_node = malloc(sizeof(t_list));
     if (!buf || !clean_node)
-        return (free(buf), free(clean_node), (void)0);
-    last_node = find_last_node(*list);
+    {
+        free(buf); // Only free buf if it's allocated
+        free(clean_node); // Only free clean_node if it's allocated
+        return;
+    }
     i = 0;
     while (last_node->str_buf[i] && last_node->str_buf[i] != '\n')
         i++;
@@ -38,8 +44,6 @@ void polish_list(t_list **list)
     clean_node->next = NULL;
     dealloc(list, clean_node);
 }
-
-
 
 char *get_line(t_list *list)
 {
@@ -79,25 +83,32 @@ void append(t_list **list, char *buf)
 
 void create_list(t_list **list, int fd)
 {
-    int char_read;	
+    int char_read;    
     char *buf;
 
     while (!found_newline(*list))
     {
         buf = malloc(BUFFER_SIZE + 1);
         if (buf == NULL)
-            return;
-
-        char_read = read(fd, buf, BUFFER_SIZE);
-        if (char_read <= 0)
         {
-            free(buf);
+            dealloc(list, NULL); // Free the list if malloc fails
             return;
         }
+
+        char_read = read(fd, buf, BUFFER_SIZE);
+        if (char_read <= 0) // Handle end of file or error
+        {
+            free(buf); // Free buf only if we can't read more
+            if (char_read < 0) // If there was an error, free the list
+                dealloc(list, NULL);
+            return; // Stop creating the list if we can't read more
+        }
+        
         buf[char_read] = '\0';
         append(list, buf);
     }
 }
+
 
 char *get_next_line(int fd)
 {
