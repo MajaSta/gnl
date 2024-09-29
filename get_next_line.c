@@ -15,6 +15,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "get_next_line.h"
+#include <stdlib.h>
+#include <unistd.h>
+
 void polish_list(t_list **list)
 {
     t_list *last_node;
@@ -66,7 +70,7 @@ char *get_line(t_list *list)
         return NULL;
 
     str_len = len_to_newline(list);
-    next_str = malloc(str_len + 1);
+    next_str = malloc(str_len + 1); // +1 for '\0'
     if (next_str == NULL)
         return NULL;
 
@@ -105,13 +109,17 @@ void create_list(t_list **list, int fd)
             return;
 
         char_read = read(fd, buf, BUFFER_SIZE);
-        if (char_read <= 0)
+        if (char_read < 0)
         {
             free(buf);
-            if (char_read == 0)
-                return;
+            return; // Return on error
+        }
+        if (char_read == 0)
+        {
+            free(buf); // Free buffer if EOF is reached
             return;
         }
+
         buf[char_read] = '\0';
         append(list, buf);
     }
@@ -135,7 +143,6 @@ char *get_next_line(int fd)
 
     return next_line;
 }
-
 #include <fcntl.h>  // For open()
 #include <unistd.h> // For close()
 #include <stdio.h>  // For printf()
