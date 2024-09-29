@@ -13,12 +13,15 @@
 #include "get_next_line.h"
 #include <stdlib.h>
 
-int found_newline(t_list *list) {
+int found_newline(t_list *list)
+{
     int i;
 
-    while (list) {
+    while (list)
+    {
         i = 0;
-        while (list->str_buf[i]) {
+        while (list->str_buf[i])
+        {
             if (list->str_buf[i] == '\n')
                 return 1;
             i++;
@@ -28,25 +31,32 @@ int found_newline(t_list *list) {
     return 0;
 }
 
-t_list *find_last_node(t_list *list) {
+
+t_list *find_last_node(t_list *list)
+{
     if (!list)
         return NULL;
 
     while (list->next)
         list = list->next;
-
+    
     return list;
 }
 
-void copy_str(t_list *list, char *str) {
-    int k = 0;
+void copy_str(t_list *list, char *str)
+{
+    int k;
     int i;
 
-    while (list) {
+    k = 0;
+    while (list)
+    {
         i = 0;
-        while (list->str_buf[i]) {
+        while (list->str_buf[i])
+        {
             str[k++] = list->str_buf[i];
-            if (list->str_buf[i] == '\n') {
+            if (list->str_buf[i] == '\n')
+            {
                 str[k] = '\0';
                 return;
             }
@@ -57,13 +67,19 @@ void copy_str(t_list *list, char *str) {
     str[k] = '\0';
 }
 
-int len_to_newline(t_list *list) {
-    int length = 0;
-    int i;
 
-    while (list) {
-        i = 0;
-        while (list->str_buf[i] && list->str_buf[i] != '\n') {
+
+int len_to_newline(t_list *list)
+{
+    int length;
+    int i;
+    
+    length = 0;
+    while (list)
+    {
+       i = 0;
+        while (list->str_buf[i] && list->str_buf[i] != '\n')
+        {
             length++;
             i++;
         }
@@ -74,25 +90,31 @@ int len_to_newline(t_list *list) {
     return length;
 }
 
-void dealloc(t_list **list, t_list *clean_node) {
+
+void dealloc(t_list **list, t_list *clean_node)
+{
     t_list *tmp;
 
     if (!list || !*list)
         return;
 
-    while (*list) {
+    while (*list)
+    {
         tmp = (*list)->next;
         free((*list)->str_buf);
         free(*list);
         *list = tmp;
     }
 
-    if (clean_node) {
-        if (clean_node->str_buf && clean_node->str_buf[0]) 
+    if (clean_node)
+    {
+        if (clean_node->str_buf[0])
             *list = clean_node;
-        else {
+        else
+        {
             free(clean_node->str_buf);
             free(clean_node);
         }
     }
 }
+

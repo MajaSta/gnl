@@ -1,57 +1,54 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: Oceano <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/02/15 11:48:03 by Oceano            #+#    #+#             */
+/*   Updated: 2023/02/19 18:50:24 by utente           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 #include <stdlib.h>
-#include <unistd.h>
+#include <stdio.h>
 
-typedef struct s_list {
-    char *str_buf;
-    struct s_list *next;
-} t_list;
-
-void polish_list(t_list **list) {
+void polish_list(t_list **list)
+{
     t_list *last_node;
     t_list *clean_node;
     int i;
     int k;
     char *buf;
 
-    if (list == NULL || *list == NULL)
-        return;
-
-    last_node = find_last_node(*list);
-    if (!last_node || !last_node->str_buf)
-        return;
-
     buf = malloc(BUFFER_SIZE + 1);
     clean_node = malloc(sizeof(t_list));
-    if (!buf || !clean_node) {
-        free(buf);
-        free(clean_node);
-        return;
-    }
-
+    if (!buf || !clean_node)
+        return (free(buf), free(clean_node), (void)0);
+    last_node = find_last_node(*list);
     i = 0;
     while (last_node->str_buf[i] && last_node->str_buf[i] != '\n')
         i++;
-    
     k = 0;
-    while (last_node->str_buf[i]) {
+    while (last_node->str_buf[i])
         buf[k++] = last_node->str_buf[++i];
-    }
     buf[k] = '\0';
-    
     clean_node->str_buf = buf;
     clean_node->next = NULL;
-
     dealloc(list, clean_node);
 }
 
-char *get_line(t_list *list) {
+
+
+char *get_line(t_list *list)
+{
     int str_len;
     char *next_str;
 
     if (list == NULL)
         return (NULL);
-
+    
     str_len = len_to_newline(list);
     next_str = malloc(str_len + 1);
     if (next_str == NULL)
@@ -61,7 +58,8 @@ char *get_line(t_list *list) {
     return (next_str);
 }
 
-void append(t_list **list, char *buf) {
+void append(t_list **list, char *buf)
+{
     t_list *new_node;
     t_list *last_node;
 
@@ -79,17 +77,20 @@ void append(t_list **list, char *buf) {
         last_node->next = new_node;
 }
 
-void create_list(t_list **list, int fd) {
+void create_list(t_list **list, int fd)
+{
     int char_read;	
     char *buf;
 
-    while (!found_newline(*list)) {
+    while (!found_newline(*list))
+    {
         buf = malloc(BUFFER_SIZE + 1);
         if (buf == NULL)
             return;
 
         char_read = read(fd, buf, BUFFER_SIZE);
-        if (char_read <= 0) {
+        if (char_read <= 0)
+        {
             free(buf);
             return;
         }
@@ -98,11 +99,12 @@ void create_list(t_list **list, int fd) {
     }
 }
 
-char *get_next_line(int fd) {
-    static t_list *list = NULL; 
+char *get_next_line(int fd)
+{
+    static t_list *list; 
     char *next_line;
-
-    if (fd < 0 || BUFFER_SIZE <= 0)
+        
+    if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
         return (NULL);
 
     create_list(&list, fd);
@@ -113,3 +115,4 @@ char *get_next_line(int fd) {
     polish_list(&list);
     return (next_line);
 }
+
