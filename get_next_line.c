@@ -104,7 +104,7 @@ char *get_next_line(int fd)
     static t_list *list; 
     char *next_line;
         
-    if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
+    if (fd < 0 || BUFFER_SIZE <= 0)
         return (NULL);
 
     create_list(&list, fd);
