@@ -104,8 +104,13 @@ char *get_next_line(int fd)
     static t_list *list; 
     char *next_line;
         
-    if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
-        return (NULL);
+    if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	if (read(fd, &next_line, 0) < 0)
+	{
+		dealloc(&list[fd], NULL, NULL);
+		return (NULL);
+	}
 
     create_list(&list, fd);
     if (list == NULL)
